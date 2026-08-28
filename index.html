@@ -249,78 +249,73 @@
 
 <script>
 /* =========================================================================
-   EVERYTHING YOU NEED TO EDIT LIVES RIGHT HERE.
-   1. Put Preethi below.
-   2. For each memory: put a photo file in a "photos" folder next to this
-      file (name it whatever's in `photo` below, e.g. photos/01.jpg).
-   3. Only 3 songs are used across the whole page, cycled through the
-      memories in order (song 1, song 2, song 3, song 1, song 2, ...).
-      Put your 3 mp3 files in a "songs" folder next to this file, then
-      edit the "songs" array right below this comment with their filenames.
-   4. Push the whole folder (this file + photos/ + songs/) to your GitHub
-      repo, turn on GitHub Pages, and send her that link.
+   HOW TO CONFIGURE INDIVIDUAL SONGS:
+   Each memory object below has an `audio` property (and a `youtube` property).
+   You can assign a specific unique song file to each individual memory like this:
+   audio: "songs/song-for-pic-1.mp3"
+   
+   If you leave `youtube` blank, it will play the specific `audio` file assigned 
+   to that memory card.
    ========================================================================= */
 
 const herName = "Preethi";
 
-const songs = ["songs/song1.mp3", "songs/song2.mp3", "songs/song3.mp3"];
-
 const memories = [
-  { photo:"photos/01.jpg", quote:"You don't have to be okay every day to still be someone worth celebrating.", youtube:"", audio:songs[0] },
-  { photo:"photos/02.jpg", quote:"Every year you stay is a whole year the world gets to keep you in it.", youtube:"", audio:songs[1] },
-  { photo:"photos/03.jpg", quote:"You are so much more than your hardest month.", youtube:"", audio:songs[2] },
-  { photo:"photos/04.jpg", quote:"This picture, this laugh, this you — it's proof there's still good ahead.", youtube:"", audio:songs[0] },
-  { photo:"photos/05.jpg", quote:"You've survived 100% of your worst days so far. That's not nothing.", youtube:"", audio:songs[1] },
-  { photo:"photos/06.jpg", quote:"Some of the strongest people just quietly kept going. That's you.", youtube:"", audio:songs[2] },
-  { photo:"photos/07.jpg", quote:"Happy birthday to someone the world would be dimmer without.", youtube:"", audio:songs[0] },
-  { photo:"photos/08.jpg", quote:"May this year be softer than the last one.", youtube:"", audio:songs[1] },
-  { photo:"photos/09.jpg", quote:"You are loved on your good days and your hardest ones.", youtube:"", audio:songs[2] },
-  { photo:"photos/10.jpg", quote:"Twenty-seven looks so good on you already.", youtube:"", audio:songs[0] },
-  { photo:"photos/11.jpg", quote:"You don't have to carry it all today. Just let yourself be celebrated.", youtube:"", audio:songs[1] },
-  { photo:"photos/12.jpg", quote:"The world is better with you still in it.", youtube:"", audio:songs[2] },
-  { photo:"photos/13.jpg", quote:"You are allowed to take up space, today and every day.", youtube:"", audio:songs[0] },
-  { photo:"photos/14.jpg", quote:"However heavy things got, you're still here — and that matters so much.", youtube:"", audio:songs[1] },
-  { photo:"photos/15.jpg", quote:"Here's to a year with more light than shadow.", youtube:"", audio:songs[2] },
-  { photo:"photos/16.jpg", quote:"You are someone's favorite person, and today it's okay to feel it.", youtube:"", audio:songs[0] },
-  { photo:"photos/17.jpg", quote:"This is your reminder: you are not a burden, you are a blessing.", youtube:"", audio:songs[1] },
-  { photo:"photos/18.jpg", quote:"May you find one small reason to smile in every day ahead.", youtube:"", audio:songs[2] },
-  { photo:"photos/19.jpg", quote:"You have survived every single hard day so far — that's a perfect record.", youtube:"", audio:songs[0] },
-  { photo:"photos/20.jpg", quote:"Happy birthday to the bravest person I know.", youtube:"", audio:songs[1] },
-  { photo:"photos/21.jpg", quote:"You are worth staying for.", youtube:"", audio:songs[2] },
-  { photo:"photos/22.jpg", quote:"Let this year be the one where you finally believe how loved you are.", youtube:"", audio:songs[0] },
-  { photo:"photos/23.jpg", quote:"There is no version of this world we'd choose without you in it.", youtube:"", audio:songs[1] },
-  { photo:"photos/24.jpg", quote:"You've carried so much, and you're still soft, still kind, still you.", youtube:"", audio:songs[2] },
-  { photo:"photos/25.jpg", quote:"May today remind you that you are deeply, permanently loved.", youtube:"", audio:songs[0] },
-  { photo:"photos/26.jpg", quote:"You don't have to be healed to be celebrated.", youtube:"", audio:songs[1] },
-  { photo:"photos/27.jpg", quote:"Here's to slow mornings, easy laughs, and a gentler year.", youtube:"", audio:songs[2] },
-  { photo:"photos/28.jpg", quote:"Your existence is not an inconvenience to anyone who loves you.", youtube:"", audio:songs[0] },
-  { photo:"photos/29.jpg", quote:"You are proof that surviving is its own kind of strength.", youtube:"", audio:songs[1] },
-  { photo:"photos/30.jpg", quote:"Wishing you a year that gives back everything you've given the world.", youtube:"", audio:songs[2] },
-  { photo:"photos/31.jpg", quote:"May every candle carry a little more hope for you.", youtube:"", audio:songs[0] },
-  { photo:"photos/32.jpg", quote:"You are still becoming who you're meant to be — take your time.", youtube:"", audio:songs[1] },
-  { photo:"photos/33.jpg", quote:"The people who love you are so glad you're still here.", youtube:"", audio:songs[2] },
-  { photo:"photos/34.jpg", quote:"You matter more than the thoughts that tell you otherwise.", youtube:"", audio:songs[0] },
-  { photo:"photos/35.jpg", quote:"This year, may you be kinder to yourself than ever before.", youtube:"", audio:songs[1] },
-  { photo:"photos/36.jpg", quote:"You are not too much. You are exactly enough.", youtube:"", audio:songs[2] },
-  { photo:"photos/37.jpg", quote:"Happy birthday — keep choosing yourself, one day at a time.", youtube:"", audio:songs[0] },
-  { photo:"photos/38.jpg", quote:"You are someone's whole world, even on the days it doesn't feel like it.", youtube:"", audio:songs[1] },
-  { photo:"photos/39.jpg", quote:"May this birthday be the start of your softest, safest chapter yet.", youtube:"", audio:songs[2] },
-  { photo:"photos/40.jpg", quote:"You've made it further than you probably give yourself credit for.", youtube:"", audio:songs[0] },
-  { photo:"photos/41.jpg", quote:"There is so much life left for you to love.", youtube:"", audio:songs[1] },
-  { photo:"photos/42.jpg", quote:"You are held, even when it's quiet.", youtube:"", audio:songs[2] },
-  { photo:"photos/43.jpg", quote:"Here's to the girl who stayed. We see you.", youtube:"", audio:songs[0] },
-  { photo:"photos/44.jpg", quote:"You are a whole universe of good things people haven't even seen yet.", youtube:"", audio:songs[1] },
-  { photo:"photos/45.jpg", quote:"May you wake up every day this year a little more sure you're wanted.", youtube:"", audio:songs[2] },
-  { photo:"photos/46.jpg", quote:"You don't owe anyone a version of yourself that isn't real.", youtube:"", audio:songs[0] },
-  { photo:"photos/47.jpg", quote:"This year, may your joy outweigh everything that tried to take it.", youtube:"", audio:songs[1] },
-  { photo:"photos/48.jpg", quote:"You are so deeply, quietly brave.", youtube:"", audio:songs[2] },
-  { photo:"photos/49.jpg", quote:"Happy birthday to the reason so many people smile.", youtube:"", audio:songs[0] },
-  { photo:"photos/50.jpg", quote:"You are never a burden — you are the reason to keep the lights on.", youtube:"", audio:songs[1] },
-  { photo:"photos/51.jpg", quote:"May this year hold more good days than hard ones, and may you notice every good one.", youtube:"", audio:songs[2] },
-  { photo:"photos/52.jpg", quote:"You are worth every candle on this cake and every one after it.", youtube:"", audio:songs[0] },
-  { photo:"photos/53.jpg", quote:"Here's to a future you get to keep showing up for.", youtube:"", audio:songs[1] },
-  { photo:"photos/54.jpg", quote:"You've already survived the hardest part. The rest is yours to enjoy.", youtube:"", audio:songs[2] },
-  { photo:"photos/55.jpg", quote:"Happy 27th. We are so glad you're still writing your story.", youtube:"", audio:songs[0] }
+  { photo:"photos/01.jpg", quote:"You don't have to be okay every day to still be someone worth celebrating.", youtube:"", audio:"songs/song1.mp3" },
+  { photo:"photos/02.jpg", quote:"Every year you stay is a whole year the world gets to keep you in it.", youtube:"", audio:"songs/song2.mp3" },
+  { photo:"photos/03.jpg", quote:"You are so much more than your hardest month.", youtube:"", audio:"songs/song3.mp3" },
+  { photo:"photos/04.jpg", quote:"This picture, this laugh, this you — it's proof there's still good ahead.", youtube:"", audio:"songs/song4.mp3" },
+  { photo:"photos/05.jpg", quote:"You've survived 100% of your worst days so far. That's not nothing.", youtube:"", audio:"songs/song5.mp3" },
+  { photo:"photos/06.jpg", quote:"Some of the strongest people just quietly kept going. That's you.", youtube:"", audio:"songs/song6.mp3" },
+  { photo:"photos/07.jpg", quote:"Happy birthday to someone the world would be dimmer without.", youtube:"", audio:"songs/song7.mp3" },
+  { photo:"photos/08.jpg", quote:"May this year be softer than the last one.", youtube:"", audio:"songs/song8.mp3" },
+  { photo:"photos/09.jpg", quote:"You are loved on your good days and your hardest ones.", youtube:"", audio:"songs/song9.mp3" },
+  { photo:"photos/10.jpg", quote:"Twenty-seven looks so good on you already.", youtube:"", audio:"songs/song10.mp3" },
+  { photo:"photos/11.jpg", quote:"You don't have to carry it all today. Just let yourself be celebrated.", youtube:"", audio:"songs/song11.mp3" },
+  { photo:"photos/12.jpg", quote:"The world is better with you still in it.", youtube:"", audio:"songs/song12.mp3" },
+  { photo:"photos/13.jpg", quote:"You are allowed to take up space, today and every day.", youtube:"", audio:"songs/song13.mp3" },
+  { photo:"photos/14.jpg", quote:"However heavy things got, you're still here — and that matters so much.", youtube:"", audio:"songs/song14.mp3" },
+  { photo:"photos/15.jpg", quote:"Here's to a year with more light than shadow.", youtube:"", audio:"songs/song15.mp3" },
+  { photo:"photos/16.jpg", quote:"You are someone's favorite person, and today it's okay to feel it.", youtube:"", audio:"songs/song16.mp3" },
+  { photo:"photos/17.jpg", quote:"This is your reminder: you are not a burden, you are a blessing.", youtube:"", audio:"songs/song17.mp3" },
+  { photo:"photos/18.jpg", quote:"May you find one small reason to smile in every day ahead.", youtube:"", audio:"songs/song18.mp3" },
+  { photo:"photos/19.jpg", quote:"You have survived every single hard day so far — that's a perfect record.", youtube:"", audio:"songs/song19.mp3" },
+  { photo:"photos/20.jpg", quote:"Happy birthday to the bravest person I know.", youtube:"", audio:"songs/song20.mp3" },
+  { photo:"photos/21.jpg", quote:"You are worth staying for.", youtube:"", audio:"songs/song21.mp3" },
+  { photo:"photos/22.jpg", quote:"Let this year be the one where you finally believe how loved you are.", youtube:"", audio:"songs/song22.mp3" },
+  { photo:"photos/23.jpg", quote:"There is no version of this world we'd choose without you in it.", youtube:"", audio:"songs/song23.mp3" },
+  { photo:"photos/24.jpg", quote:"You've carried so much, and you're still soft, still kind, still you.", youtube:"", audio:"songs/song24.mp3" },
+  { photo:"photos/25.jpg", quote:"May today remind you that you are deeply, permanently loved.", youtube:"", audio:"songs/song25.mp3" },
+  { photo:"photos/26.jpg", quote:"You don't have to be healed to be celebrated.", youtube:"", audio:"songs/song26.mp3" },
+  { photo:"photos/27.jpg", quote:"Here's to slow mornings, easy laughs, and a gentler year.", youtube:"", audio:"songs/song27.mp3" },
+  { photo:"photos/28.jpg", quote:"Your existence is not an inconvenience to anyone who loves you.", youtube:"", audio:"songs/song28.mp3" },
+  { photo:"photos/29.jpg", quote:"You are proof that surviving is its own kind of strength.", youtube:"", audio:"songs/song29.mp3" },
+  { photo:"photos/30.jpg", quote:"Wishing you a year that gives back everything you've given the world.", youtube:"", audio:"songs/song30.mp3" },
+  { photo:"photos/31.jpg", quote:"May every candle carry a little more hope for you.", youtube:"", audio:"songs/song31.mp3" },
+  { photo:"photos/32.jpg", quote:"You are still becoming who you're meant to be — take your time.", youtube:"", audio:"songs/song32.mp3" },
+  { photo:"photos/33.jpg", quote:"The people who love you are so glad you're still here.", youtube:"", audio:"songs/song33.mp3" },
+  { photo:"photos/34.jpg", quote:"You matter more than the thoughts that tell you otherwise.", youtube:"", audio:"songs/song34.mp3" },
+  { photo:"photos/35.jpg", quote:"This year, may you be kinder to yourself than ever before.", youtube:"", audio:"songs/song35.mp3" },
+  { photo:"photos/36.jpg", quote:"You are not too much. You are exactly enough.", youtube:"", audio:"songs/song36.mp3" },
+  { photo:"photos/37.jpg", quote:"Happy birthday — keep choosing yourself, one day at a time.", youtube:"", audio:"songs/song37.mp3" },
+  { photo:"photos/38.jpg", quote:"You are someone's whole world, even on the days it doesn't feel like it.", youtube:"", audio:"songs/song38.mp3" },
+  { photo:"photos/39.jpg", quote:"May this birthday be the start of your softest, safest chapter yet.", youtube:"", audio:"songs/song39.mp3" },
+  { photo:"photos/40.jpg", quote:"You've made it further than you probably give yourself credit for.", youtube:"", audio:"songs/song40.mp3" },
+  { photo:"photos/41.jpg", quote:"There is so much life left for you to love.", youtube:"", audio:"songs/song41.mp3" },
+  { photo:"photos/42.jpg", quote:"You are held, even when it's quiet.", youtube:"", audio:"songs/song42.mp3" },
+  { photo:"photos/43.jpg", quote:"Here's to the girl who stayed. We see you.", youtube:"", audio:"songs/song43.mp3" },
+  { photo:"photos/44.jpg", quote:"You are a whole universe of good things people haven't even seen yet.", youtube:"", audio:"songs/song44.mp3" },
+  { photo:"photos/45.jpg", quote:"May you wake up every day this year a little more sure you're wanted.", youtube:"", audio:"songs/song45.mp3" },
+  { photo:"photos/46.jpg", quote:"You don't owe anyone a version of yourself that isn't real.", youtube:"", audio:"songs/song46.mp3" },
+  { photo:"photos/47.jpg", quote:"This year, may your joy outweigh everything that tried to take it.", youtube:"", audio:"songs/song47.mp3" },
+  { photo:"photos/48.jpg", quote:"You are so deeply, quietly brave.", youtube:"", audio:"songs/song48.mp3" },
+  { photo:"photos/49.jpg", quote:"Happy birthday to the reason so many people smile.", youtube:"", audio:"songs/song49.mp3" },
+  { photo:"photos/50.jpg", quote:"You are never a burden — you are the reason to keep the lights on.", youtube:"", audio:"songs/song50.mp3" },
+  { photo:"photos/51.jpg", quote:"May this year hold more good days than hard ones, and may you notice every good one.", youtube:"", audio:"songs/song51.mp3" },
+  { photo:"photos/52.jpg", quote:"You are worth every candle on this cake and every one after it.", youtube:"", audio:"songs/song52.mp3" },
+  { photo:"photos/53.jpg", quote:"Here's to a future you get to keep showing up for.", youtube:"", audio:"songs/song53.mp3" },
+  { photo:"photos/54.jpg", quote:"You've already survived the hardest part. The rest is yours to enjoy.", youtube:"", audio:"songs/song54.mp3" },
+  { photo:"photos/55.jpg", quote:"Happy 27th. We are so glad you're still writing your story.", youtube:"", audio:"songs/song55.mp3" }
 ];
 
 /* ========================= no need to edit below ========================= */
