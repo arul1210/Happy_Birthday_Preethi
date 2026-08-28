@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>27 Candles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Caveat:wght@500;700&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #241629;
+    --ink-2: #33203a;
+    --cream: #FBF3E7;
+    --paper: #FFFCF6;
+    --coral: #E8927C;
+    --gold: #E3B23C;
+    --sage: #9FB6A0;
+    --rose: #C97B84;
+    --heart-red: #E5486B;
+    --heart-pink: #F6A8BC;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ background: var(--ink); color: var(--cream); font-family:'Sora',sans-serif; overflow-x:hidden; }
+  ::selection{ background: var(--gold); color: var(--ink); }
+  #heartsBg{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  body > *:not(#heartsBg){ position:relative; z-index:1; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:6vh 6vw;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(229,72,107,0.20), transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(246,168,188,0.16), transparent 50%),
+      linear-gradient(180deg, #1c1120 0%, var(--ink) 55%, #2c1b32 100%);
+  }
+  .hero-content{ max-width:760px; }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--sage); margin-bottom:1.6rem; opacity:0; animation: rise 1s ease forwards 0.2s; }
+  .headline{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(2.4rem,7vw,5rem); line-height:1.04; letter-spacing:-0.01em; opacity:0; animation: rise 1.1s ease forwards 0.45s; }
+  .headline em{ font-style:italic; font-weight:500; color:var(--coral); }
+  .headline .name{ display:inline-block; font-family:'Caveat',cursive; font-weight:700; color:var(--gold); font-size:1.18em; transform:rotate(-2deg); }
+  .sub{ margin-top:1.6rem; font-size:clamp(1rem,2vw,1.2rem); font-weight:300; color:rgba(251,243,231,0.78); max-width:520px; margin-left:auto; margin-right:auto; line-height:1.6; opacity:0; animation: rise 1.1s ease forwards 0.7s; }
+  .scrolldown{ margin-top:3.4rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--cream); opacity:0; animation: rise 1s ease forwards 1s, bob 2.4s ease-in-out infinite 2s; cursor:pointer; background:none; border:none; }
+  @keyframes rise{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* ---------- SECTION LABELS ---------- */
+  .section-head{ max-width:640px; margin:0 auto 3.4rem; padding:0 6vw; text-align:center; }
+  .section-head .eyebrow{ margin-bottom:1rem; }
+  .section-head h2{ font-family:'Fraunces',serif; font-weight:500; font-size:clamp(1.7rem,4vw,2.6rem); line-height:1.15; }
+
+  /* ---------- GALLERY ---------- */
+  .gallery{ padding:9vh 0 6vh; background:linear-gradient(180deg, var(--ink) 0%, #29182e 100%); }
+  .memory-grid{ max-width:1180px; margin:0 auto; padding:0 6vw; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:2.4rem; }
+  .memory-card{
+    background:var(--paper); color:var(--ink); border-radius:6px; padding:1.1rem 1.1rem 1.4rem;
+    box-shadow:0 24px 50px -20px rgba(0,0,0,0.55);
+    transform:rotate(var(--tilt,-1deg));
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .memory-card:nth-child(3n+1){ --tilt:-1.4deg; }
+  .memory-card:nth-child(3n+2){ --tilt:1.1deg; }
+  .memory-card:nth-child(3n+3){ --tilt:-0.5deg; }
+  .memory-card:hover{ transform:rotate(0deg) translateY(-6px); box-shadow:0 30px 60px -18px rgba(0,0,0,0.6); }
+  .memory-card.playing{ outline:2px solid var(--heart-red); transform:rotate(0deg) translateY(-6px) scale(1.015); }
+
+  .num{ font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.15em; color:var(--rose); text-transform:uppercase; margin-bottom:0.6rem; display:block; }
+
+  .photo-slot{
+    width:100%; aspect-ratio:4/5; border-radius:3px; background:#EFE6D6;
+    border:1px solid rgba(36,22,41,0.08); overflow:hidden; position:relative; cursor:pointer;
+  }
+  .photo-slot img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s ease; }
+  .memory-card:hover .photo-slot img{ transform:scale(1.04); }
+  .photo-slot .fallback{
+    width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+    color:var(--heart-pink); font-size:2rem;
+  }
+  .play-mark{
+    position:absolute; bottom:8px; right:8px; width:30px; height:30px; border-radius:50%;
+    background:rgba(36,22,41,0.72); color:var(--cream); display:flex; align-items:center; justify-content:center;
+    font-size:0.85rem; opacity:0; transition:opacity .25s ease;
+  }
+  .memory-card:hover .play-mark, .memory-card.playing .play-mark{ opacity:1; }
+  .memory-card.playing .play-mark{ background:var(--heart-red); }
+
+  .quote{ font-family:'Caveat',cursive; font-weight:600; font-size:1.5rem; line-height:1.25; color:var(--ink-2); margin-top:1rem; }
+
+  .inline-player{ margin-top:0.6rem; display:none; }
+  .memory-card.playing .inline-player{ display:block; }
+  .inline-player iframe{ width:100%; aspect-ratio:16/9; border:0; border-radius:3px; }
+  .inline-player audio{ width:100%; height:32px; }
+
+  .play-bar{ max-width:1180px; margin:0 auto 4.5rem; padding:0 6vw; display:flex; justify-content:center; }
+  .play-btn{
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.14em; text-transform:uppercase;
+    background:var(--heart-red); color:var(--cream); border:none; padding:0.95rem 2.2rem; border-radius:999px;
+    cursor:pointer; transition:transform .2s ease, background .2s ease;
+  }
+  .play-btn:hover{ transform:translateY(-2px); background:var(--gold); color:var(--ink); }
+
+  /* ---------- SLIDESHOW OVERLAY ---------- */
+  .overlay{ position:fixed; inset:0; z-index:50; background:rgba(20,12,24,0.97); display:none; align-items:center; justify-content:center; flex-direction:column; padding:6vh 6vw; }
+  .overlay.active{ display:flex; }
+  .overlay .frame{ max-width:620px; width:100%; text-align:center; }
+  .overlay .ph{ width:100%; max-height:56vh; border-radius:6px; overflow:hidden; background:#2b1c30; display:flex; align-items:center; justify-content:center; }
+  .overlay .ph img{ width:100%; height:100%; object-fit:contain; max-height:56vh; }
+  .overlay .oq{ font-family:'Caveat',cursive; font-weight:600; font-size:1.9rem; margin-top:1.6rem; }
+  .overlay .counter{ margin-top:1rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.2em; color:var(--sage); }
+  .overlay .close{ position:absolute; top:2rem; right:2.4rem; background:none; border:none; color:var(--cream); font-size:1.6rem; cursor:pointer; opacity:0.7; }
+  .overlay .close:hover{ opacity:1; }
+  .overlay-audio{ width:1px; height:1px; opacity:0.01; position:absolute; pointer-events:none; }
+
+  /* ---------- CANDLES ---------- */
+  .candles-section{ padding:10vh 6vw 8vh; text-align:center; background:linear-gradient(180deg, #29182e 0%, #1a0f1e 100%); }
+  .candle-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:0.55rem; max-width:720px; margin:2.6rem auto 0.6rem; }
+  .candle{ width:14px; height:46px; background:linear-gradient(180deg, var(--rose), var(--coral)); border-radius:3px 3px 1px 1px; position:relative; cursor:pointer; }
+  .candle .flame{ position:absolute; left:50%; top:-14px; width:9px; height:16px; transform:translateX(-50%); background:radial-gradient(circle at 50% 70%, #FFF3C4 0%, var(--gold) 55%, transparent 80%); border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; animation:flicker 1.6s ease-in-out infinite; transition:opacity .25s ease; }
+  .candle.out .flame{ opacity:0; }
+  @keyframes flicker{ 0%,100%{transform:translateX(-50%) scale(1) rotate(-2deg);} 50%{transform:translateX(-50%) scale(0.92) rotate(2deg);} }
+  .wish-note{ max-width:480px; margin:2.4rem auto 0; font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.15rem; line-height:1.6; color:rgba(251,243,231,0.85); opacity:0; transition:opacity .8s ease; }
+  .wish-note.show{ opacity:1; }
+
+  footer{ text-align:center; padding:3.2rem 6vw 3.6rem; font-family:'JetBrains Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; color:rgba(251,243,231,0.35); }
+
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; animation-iteration-count:1 !important;} html{scroll-behavior:auto;} }
+
+  /* ---------- LOCK SCREEN ---------- */
+  .lock-screen{
+    position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
+    padding:6vw;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(229,72,107,0.20), transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(246,168,188,0.16), transparent 50%),
+      linear-gradient(180deg, #1c1120 0%, var(--ink) 55%, #2c1b32 100%);
+  }
+  .lock-screen.unlocked{ display:none; }
+  .lock-card{
+    background:var(--paper); color:var(--ink); border-radius:10px; padding:2.6rem 2rem;
+    max-width:360px; width:100%; text-align:center; box-shadow:0 30px 60px -10px rgba(0,0,0,0.55);
+  }
+  .lock-heart{ font-size:2.4rem; color:var(--heart-red); margin-bottom:0.6rem; }
+  .lock-card h2{ font-family:'Fraunces',serif; font-weight:500; font-size:1.4rem; margin-bottom:0.5rem; }
+  .lock-card p{ font-size:0.85rem; color:#6b5c72; margin-bottom:1.3rem; line-height:1.5; }
+  .lock-card input{
+    width:100%; padding:0.75rem 0.9rem; border-radius:6px; border:1px solid rgba(36,22,41,0.15);
+    font-family:'Sora',sans-serif; font-size:0.95rem; margin-bottom:0.9rem; outline:none; text-align:center;
+  }
+  .lock-card input:focus{ border-color:var(--heart-red); }
+  .lock-card button{
+    width:100%; padding:0.8rem; border:none; border-radius:6px; background:var(--heart-red); color:var(--cream);
+    font-family:'JetBrains Mono',monospace; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase;
+    cursor:pointer; transition:background .2s ease, color .2s ease;
+  }
+  .lock-card button:hover{ background:var(--gold); color:var(--ink); }
+  .lock-error{ color:var(--heart-red); font-size:0.8rem; margin-top:0.8rem; margin-bottom:0; display:none; }
+  .lock-error.show{ display:block; }
+</style>
+</head>
+<body>
+<canvas id="heartsBg"></canvas>
+
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-heart">♡</div>
+    <h2>This one's just for you</h2>
+    <p>Enter the password to open your page</p>
+    <input type="password" id="lockInput" placeholder="Password" autocomplete="off">
+    <button id="lockBtn">Unlock</button>
+    <p class="lock-error" id="lockError">That's not quite it — try again</p>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const LOCK_PASSWORD = "Ammu2708";
+    const lockScreen = document.getElementById('lockScreen');
+    const lockInput = document.getElementById('lockInput');
+    const lockBtn = document.getElementById('lockBtn');
+    const lockError = document.getElementById('lockError');
+
+    function tryUnlock(){
+      if(lockInput.value === LOCK_PASSWORD){
+        localStorage.setItem('bdayUnlocked', 'yes');
+        lockScreen.classList.add('unlocked');
+      } else {
+        lockError.classList.add('show');
+        lockInput.value = '';
+        lockInput.focus();
+      }
+    }
+    lockBtn.addEventListener('click', tryUnlock);
+    lockInput.addEventListener('keydown', e => { if(e.key === 'Enter') tryUnlock(); });
+
+    if(localStorage.getItem('bdayUnlocked') === 'yes'){
+      lockScreen.classList.add('unlocked');
+    } else {
+      lockInput.focus();
+    }
+  })();
+</script>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">twenty-seven years, and still here</div>
+    <h1 class="headline">
+      Happy birthday,<br>
+      <span class="name" id="heroName">her name</span> <em>— you made it.</em>
+    </h1>
+    <p class="sub">This is a small collection of everything good about you: the pictures, the songs, the reasons.<br>Tap any picture to play its song.</p>
+    <button class="scrolldown" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">↓ begin</button>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="section-head">
+    <div class="eyebrow">a memory for every candle</div>
+    <h2>Moments worth keeping</h2>
+  </div>
+
+  <div class="memory-grid" id="memoryGrid"></div>
+
+  <div class="play-bar">
+    <button class="play-btn" id="playAllBtn">▶ play it all for her</button>
+  </div>
+</section>
+
+<section class="candles-section">
+  <div class="eyebrow">make a wish</div>
+  <h2 style="font-family:'Fraunces',serif; font-weight:500; font-size:clamp(1.6rem,4vw,2.3rem); margin-top:0.8rem;">27 candles. Light them one at a time.</h2>
+  <div class="candle-row" id="candleRow"></div>
+  <p class="wish-note" id="wishNote">Twenty-seven candles, twenty-seven reasons the story isn't over. However hard this year was, you're still here to blow them out — and that's the whole point. Keep going. We've got you.</p>
+</section>
+
+<footer>made with care, for your 27th — every note here is real</footer>
+
+<div class="overlay" id="overlay">
+  <button class="close" id="closeOverlay">✕</button>
+  <div class="frame">
+    <div class="ph" id="overlayPhoto"></div>
+    <div class="oq" id="overlayQuote"></div>
+    <div class="counter" id="overlayCounter"></div>
+  </div>
+  <iframe class="overlay-audio" id="ytFrame" allow="autoplay; encrypted-media; accelerometer; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <audio class="overlay-audio" id="fileAudio"></audio>
+</div>
+
+<script>
+/* =========================================================================
+   EVERYTHING YOU NEED TO EDIT LIVES RIGHT HERE.
+   1. Put her name below.
+   2. For each memory: put a photo file in a "photos" folder next to this
+      file (name it whatever's in `photo` below, e.g. photos/01.jpg).
+   3. Only 3 songs are used across the whole page, cycled through the
+      memories in order (song 1, song 2, song 3, song 1, song 2, ...).
+      Put your 3 mp3 files in a "songs" folder next to this file, then
+      edit the "songs" array right below this comment with their filenames.
+   4. Push the whole folder (this file + photos/ + songs/) to your GitHub
+      repo, turn on GitHub Pages, and send her that link.
+   ========================================================================= */
+
+const herName = "her name";
+
+const songs = ["songs/song1.mp3", "songs/song2.mp3", "songs/song3.mp3"];
+
+const memories = [
+  { photo:"photos/01.jpg", quote:"You don't have to be okay every day to still be someone worth celebrating.", youtube:"", audio:songs[0] },
+  { photo:"photos/02.jpg", quote:"Every year you stay is a whole year the world gets to keep you in it.", youtube:"", audio:songs[1] },
+  { photo:"photos/03.jpg", quote:"You are so much more than your hardest month.", youtube:"", audio:songs[2] },
+  { photo:"photos/04.jpg", quote:"This picture, this laugh, this you — it's proof there's still good ahead.", youtube:"", audio:songs[0] },
+  { photo:"photos/05.jpg", quote:"You've survived 100% of your worst days so far. That's not nothing.", youtube:"", audio:songs[1] },
+  { photo:"photos/06.jpg", quote:"Some of the strongest people just quietly kept going. That's you.", youtube:"", audio:songs[2] },
+  { photo:"photos/07.jpg", quote:"Happy birthday to someone the world would be dimmer without.", youtube:"", audio:songs[0] },
+  { photo:"photos/08.jpg", quote:"May this year be softer than the last one.", youtube:"", audio:songs[1] },
+  { photo:"photos/09.jpg", quote:"You are loved on your good days and your hardest ones.", youtube:"", audio:songs[2] },
+  { photo:"photos/10.jpg", quote:"Twenty-seven looks so good on you already.", youtube:"", audio:songs[0] },
+  { photo:"photos/11.jpg", quote:"You don't have to carry it all today. Just let yourself be celebrated.", youtube:"", audio:songs[1] },
+  { photo:"photos/12.jpg", quote:"The world is better with you still in it.", youtube:"", audio:songs[2] },
+  { photo:"photos/13.jpg", quote:"You are allowed to take up space, today and every day.", youtube:"", audio:songs[0] },
+  { photo:"photos/14.jpg", quote:"However heavy things got, you're still here — and that matters so much.", youtube:"", audio:songs[1] },
+  { photo:"photos/15.jpg", quote:"Here's to a year with more light than shadow.", youtube:"", audio:songs[2] },
+  { photo:"photos/16.jpg", quote:"You are someone's favorite person, and today it's okay to feel it.", youtube:"", audio:songs[0] },
+  { photo:"photos/17.jpg", quote:"This is your reminder: you are not a burden, you are a blessing.", youtube:"", audio:songs[1] },
+  { photo:"photos/18.jpg", quote:"May you find one small reason to smile in every day ahead.", youtube:"", audio:songs[2] },
+  { photo:"photos/19.jpg", quote:"You have survived every single hard day so far — that's a perfect record.", youtube:"", audio:songs[0] },
+  { photo:"photos/20.jpg", quote:"Happy birthday to the bravest person I know.", youtube:"", audio:songs[1] },
+  { photo:"photos/21.jpg", quote:"You are worth staying for.", youtube:"", audio:songs[2] },
+  { photo:"photos/22.jpg", quote:"Let this year be the one where you finally believe how loved you are.", youtube:"", audio:songs[0] },
+  { photo:"photos/23.jpg", quote:"There is no version of this world we'd choose without you in it.", youtube:"", audio:songs[1] },
+  { photo:"photos/24.jpg", quote:"You've carried so much, and you're still soft, still kind, still you.", youtube:"", audio:songs[2] },
+  { photo:"photos/25.jpg", quote:"May today remind you that you are deeply, permanently loved.", youtube:"", audio:songs[0] },
+  { photo:"photos/26.jpg", quote:"You don't have to be healed to be celebrated.", youtube:"", audio:songs[1] },
+  { photo:"photos/27.jpg", quote:"Here's to slow mornings, easy laughs, and a gentler year.", youtube:"", audio:songs[2] },
+  { photo:"photos/28.jpg", quote:"Your existence is not an inconvenience to anyone who loves you.", youtube:"", audio:songs[0] },
+  { photo:"photos/29.jpg", quote:"You are proof that surviving is its own kind of strength.", youtube:"", audio:songs[1] },
+  { photo:"photos/30.jpg", quote:"Wishing you a year that gives back everything you've given the world.", youtube:"", audio:songs[2] },
+  { photo:"photos/31.jpg", quote:"May every candle carry a little more hope for you.", youtube:"", audio:songs[0] },
+  { photo:"photos/32.jpg", quote:"You are still becoming who you're meant to be — take your time.", youtube:"", audio:songs[1] },
+  { photo:"photos/33.jpg", quote:"The people who love you are so glad you're still here.", youtube:"", audio:songs[2] },
+  { photo:"photos/34.jpg", quote:"You matter more than the thoughts that tell you otherwise.", youtube:"", audio:songs[0] },
+  { photo:"photos/35.jpg", quote:"This year, may you be kinder to yourself than ever before.", youtube:"", audio:songs[1] },
+  { photo:"photos/36.jpg", quote:"You are not too much. You are exactly enough.", youtube:"", audio:songs[2] },
+  { photo:"photos/37.jpg", quote:"Happy birthday — keep choosing yourself, one day at a time.", youtube:"", audio:songs[0] },
+  { photo:"photos/38.jpg", quote:"You are someone's whole world, even on the days it doesn't feel like it.", youtube:"", audio:songs[1] },
+  { photo:"photos/39.jpg", quote:"May this birthday be the start of your softest, safest chapter yet.", youtube:"", audio:songs[2] },
+  { photo:"photos/40.jpg", quote:"You've made it further than you probably give yourself credit for.", youtube:"", audio:songs[0] },
+  { photo:"photos/41.jpg", quote:"There is so much life left for you to love.", youtube:"", audio:songs[1] },
+  { photo:"photos/42.jpg", quote:"You are held, even when it's quiet.", youtube:"", audio:songs[2] },
+  { photo:"photos/43.jpg", quote:"Here's to the girl who stayed. We see you.", youtube:"", audio:songs[0] },
+  { photo:"photos/44.jpg", quote:"You are a whole universe of good things people haven't even seen yet.", youtube:"", audio:songs[1] },
+  { photo:"photos/45.jpg", quote:"May you wake up every day this year a little more sure you're wanted.", youtube:"", audio:songs[2] },
+  { photo:"photos/46.jpg", quote:"You don't owe anyone a version of yourself that isn't real.", youtube:"", audio:songs[0] },
+  { photo:"photos/47.jpg", quote:"This year, may your joy outweigh everything that tried to take it.", youtube:"", audio:songs[1] },
+  { photo:"photos/48.jpg", quote:"You are so deeply, quietly brave.", youtube:"", audio:songs[2] },
+  { photo:"photos/49.jpg", quote:"Happy birthday to the reason so many people smile.", youtube:"", audio:songs[0] },
+  { photo:"photos/50.jpg", quote:"You are never a burden — you are the reason to keep the lights on.", youtube:"", audio:songs[1] },
+  { photo:"photos/51.jpg", quote:"May this year hold more good days than hard ones, and may you notice every good one.", youtube:"", audio:songs[2] },
+  { photo:"photos/52.jpg", quote:"You are worth every candle on this cake and every one after it.", youtube:"", audio:songs[0] },
+  { photo:"photos/53.jpg", quote:"Here's to a future you get to keep showing up for.", youtube:"", audio:songs[1] },
+  { photo:"photos/54.jpg", quote:"You've already survived the hardest part. The rest is yours to enjoy.", youtube:"", audio:songs[2] },
+  { photo:"photos/55.jpg", quote:"Happy 27th. We are so glad you're still writing your story.", youtube:"", audio:songs[0] }
+];
+
+/* ========================= no need to edit below ========================= */
+
+document.getElementById('heroName').textContent = herName;
+
+const grid = document.getElementById('memoryGrid');
+let activeCard = null;
+
+memories.forEach((m, i) => {
+  const id = i + 1;
+  const card = document.createElement('div');
+  card.className = 'memory-card';
+  card.dataset.id = id;
+
+  card.innerHTML = `
+    <span class="num">${String(id).padStart(2,'0')} ♡</span>
+    <div class="photo-slot">
+      <img src="${m.photo}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'fallback',textContent:'♡'}))">
+      <div class="play-mark">▶</div>
+    </div>
+    <div class="quote">${m.quote}</div>
+    <div class="inline-player"></div>
+  `;
+
+  card.querySelector('.photo-slot').addEventListener('click', () => toggleCard(card, m));
+  grid.appendChild(card);
+});
+
+function stopCard(card){
+  card.classList.remove('playing');
+  const player = card.querySelector('.inline-player');
+  player.innerHTML = '';
+}
+
+function toggleCard(card, m){
+  const isSame = activeCard === card;
+  if(activeCard) stopCard(activeCard);
+  if(isSame){ activeCard = null; return; }
+
+  const player = card.querySelector('.inline-player');
+  if(m.youtube){
+    player.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.youtube}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; accelerometer; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  } else if(m.audio){
+    player.innerHTML = `<audio controls autoplay src="${m.audio}"></audio>`;
+  }
+  card.classList.add('playing');
+  activeCard = card;
+}
+
+/* ---------------- slideshow ---------------- */
+const overlay = document.getElementById('overlay');
+const overlayPhoto = document.getElementById('overlayPhoto');
+const overlayQuote = document.getElementById('overlayQuote');
+const overlayCounter = document.getElementById('overlayCounter');
+const ytFrame = document.getElementById('ytFrame');
+const fileAudio = document.getElementById('fileAudio');
+let slideIdx = 0;
+let slideTimer = null;
+
+function stopAllAudio(){ ytFrame.src=''; fileAudio.pause(); fileAudio.src=''; }
+
+function showSlide(i){
+  slideIdx = (i + memories.length) % memories.length;
+  const m = memories[slideIdx];
+  overlayPhoto.innerHTML = `<img src="${m.photo}" onerror="this.style.display='none'">`;
+  overlayQuote.textContent = m.quote;
+  overlayCounter.textContent = `${slideIdx+1} / ${memories.length}`;
+  stopAllAudio();
+  if(m.youtube) ytFrame.src = `https://www.youtube.com/embed/${m.youtube}?autoplay=1&playsinline=1&rel=0&controls=0`;
+  else if(m.audio){ fileAudio.src = m.audio; fileAudio.play().catch(()=>{}); }
+  clearTimeout(slideTimer);
+  slideTimer = setTimeout(()=> showSlide(slideIdx+1), 7000);
+}
+
+document.getElementById('playAllBtn').onclick = () => { if(activeCard) stopCard(activeCard); activeCard=null; overlay.classList.add('active'); showSlide(0); };
+document.getElementById('closeOverlay').onclick = () => { overlay.classList.remove('active'); clearTimeout(slideTimer); stopAllAudio(); };
+overlay.addEventListener('click', e => { if(e.target === overlay) document.getElementById('closeOverlay').click(); });
+
+/* ---------------- candles ---------------- */
+const candleRow = document.getElementById('candleRow');
+const wishNote = document.getElementById('wishNote');
+for(let i=0;i<27;i++){
+  const c = document.createElement('div');
+  c.className = 'candle out';
+  c.innerHTML = '<div class="flame"></div>';
+  c.onclick = () => {
+    c.classList.toggle('out');
+    const lit = document.querySelectorAll('.candle:not(.out)').length;
+    wishNote.classList.toggle('show', lit === 27);
+  };
+  candleRow.appendChild(c);
+}
+
+/* ---------------- floating hearts background ---------------- */
+(function(){
+  const c = document.getElementById('heartsBg');
+  const ctx = c.getContext('2d');
+  let w,h,hearts=[];
+  const colors = ['#E5486B','#F6A8BC','#E8927C','#C97B84'];
+  function makeHeart(recycled){
+    return { x:Math.random()*w, y:recycled? h+30 : Math.random()*h, size:Math.random()*14+8,
+      speed:Math.random()*0.35+0.15, sway:Math.random()*1.2+0.4, swayOff:Math.random()*Math.PI*2,
+      opacity:Math.random()*0.35+0.12, color:colors[Math.floor(Math.random()*colors.length)] };
+  }
+  function drawHeart(x,y,size,color,opacity){
+    ctx.save(); ctx.globalAlpha=opacity; ctx.fillStyle=color; ctx.beginPath();
+    const t=size*0.3;
+    ctx.moveTo(x,y+t);
+    ctx.bezierCurveTo(x,y,x-size/2,y,x-size/2,y+t);
+    ctx.bezierCurveTo(x-size/2,y+(size+t)/2,x,y+(size+t)/1.4,x,y+size);
+    ctx.bezierCurveTo(x,y+(size+t)/1.4,x+size/2,y+(size+t)/2,x+size/2,y+t);
+    ctx.bezierCurveTo(x+size/2,y,x,y,x,y+t);
+    ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function size(){
+    w = c.width = window.innerWidth;
+    h = c.height = document.documentElement.scrollHeight;
+    hearts = Array.from({length: Math.max(30, Math.floor(w/40))}, ()=> makeHeart(false));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    hearts.forEach(pt=>{
+      pt.y -= pt.speed;
+      pt.x += Math.sin(pt.y*0.01 + pt.swayOff) * (pt.sway*0.15);
+      if(pt.y < -30) Object.assign(pt, makeHeart(true));
+      drawHeart(pt.x, pt.y, pt.size, pt.color, pt.opacity);
+    });
+    requestAnimationFrame(draw);
+  }
+  let rt; window.addEventListener('resize', ()=>{ clearTimeout(rt); rt=setTimeout(size,200); });
+  new ResizeObserver(()=>size()).observe(document.body);
+  size(); draw();
+})();
+</script>
+</body>
+</html>
